@@ -1988,18 +1988,21 @@ static int glyph_available (lua_State *L)
 
   // if it exists, call it
   if (pGetGlyphIndicesW)
-    {
+  {
+	  WCHAR wcGlyph = glyph; // Convert WORD to WCHAR
 	  WORD indice;
 
-	  if ((*pGetGlyphIndicesW)(dc.m_hDC, &glyph, 1,
-	                            &indice, GGI_MARK_NONEXISTING_GLYPHS ) != GDI_ERROR &&
-	          indice != 0xffff)
-      lua_pushnumber (L, indice);  
-    else
-      lua_pushnumber (L, 0); 
-    }
+	  if ((*pGetGlyphIndicesW)(dc.m_hDC, &wcGlyph, 1,
+		  &indice, GGI_MARK_NONEXISTING_GLYPHS) != GDI_ERROR &&
+		  indice != 0xffff)
+		  lua_pushnumber(L, indice);
+	  else
+		  lua_pushnumber(L, 0);
+  }
   else
-    lua_pushnumber (L, 0); 
+  {
+	  lua_pushnumber(L, 0);
+  }
   
   return 1;   // one result
 

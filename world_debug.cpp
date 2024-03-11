@@ -200,31 +200,32 @@ VARIANT CMUSHclientDoc::Debug(LPCTSTR Command)
   else
 #endif
 
-//-----------------------------------------------------------------------
-//          colours
-//-----------------------------------------------------------------------
-  if (strcmp (Command, "colours") == 0 || strcmp (Command, "colors") == 0)
-    {
+	  //-----------------------------------------------------------------------
+	  //          colours
+	  //-----------------------------------------------------------------------
+  if (strcmp(Command, "colours") == 0 || strcmp(Command, "colors") == 0)
+  {
+	  multimap<COLORREF, string, colour_less> mColours;
 
-    multimap<COLORREF, string, colour_less> mColours;
+	  for (POSITION pos = App.m_ColoursMap.GetStartPosition(); pos; iCount++)
+	  {
+		  CColours* pColour;
+		  CString strColourName;
+		  App.m_ColoursMap.GetNextAssoc(pos, strColourName, pColour);
+		  // Create a pair with a const key explicitly
+		  mColours.insert(std::pair<const COLORREF, string>(pColour->iColour, (LPCTSTR)strColourName));
+	  }
 
-    for (POSITION pos = App.m_ColoursMap.GetStartPosition(); pos; iCount++)
-      {
-      CColours * pColour;
-      CString strColourName;
-      App.m_ColoursMap.GetNextAssoc (pos, strColourName, pColour);
-      mColours.insert (make_pair (pColour->iColour, strColourName));
-      }
+	  for (multimap<COLORREF, string, colour_less>::const_iterator it = mColours.begin();
+		  it != mColours.end();
+		  it++)
+	  {
+		  ShowOneColour(this, it->second.c_str(), it->first);
+	  }
 
-    for (multimap<COLORREF, string, colour_less>::const_iterator it = mColours.begin ();
-         it != mColours.end ();
-         it++)
+	  Note(TFormat("%i colour%s.", PLURAL(iCount)));
+  } // end of colours
 
-      ShowOneColour (this, it->second.c_str (), it->first);
-     
-    Note (TFormat ("%i colour%s.", PLURAL (iCount)));
-
-    } // end of colours
 
 //-----------------------------------------------------------------------
 //          colours256

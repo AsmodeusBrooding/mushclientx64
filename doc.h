@@ -21,8 +21,8 @@
 
 // New versions - things to change
 
-#define THISVERSION 497                       // Step 1.
-const CString MUSHCLIENT_VERSION = "4.97";    // Step 2.
+#define THISVERSION 498                       // Step 1.
+const CString MUSHCLIENT_VERSION = "4.98";    // Step 2.
 // Step 3. Don't forget VERSION resource in Resources tab
 // Step 4. Remember: README.TXT 
 
@@ -1372,6 +1372,9 @@ public:
   map<COLORREF, COLORREF> m_ColourTranslationMap;
 
   list<CPaneStyle> m_OutstandingLines;
+    bool m_bNotesNotWantedNow;
+  bool m_bDoingSimulate;
+  bool m_bLineOmittedFromOutput;
   BOOL m_bScrollBarWanted;      // true if we want to see scroll bars
 
   long m_nCount_IAC_DO;         // count of IAC DO we got

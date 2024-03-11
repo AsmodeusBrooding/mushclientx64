@@ -2023,62 +2023,57 @@ LRESULT CMainFrame::WindowProc(UINT message, WPARAM wParam, LPARAM lParam)
 }   // end of CMainFrame::WindowProc
 
 
-void CMainFrame::LeftTrayClick (void)
-  {
-CPoint point;
-  
-  GetCursorPos(&point);
+void CMainFrame::LeftTrayClick(void)
+{
+	CPoint point;
 
-  multimap<string, int> sWorlds;
+	GetCursorPos(&point);
 
-// add all documents to the list
+	std::multimap<std::string, int> sWorlds;
 
-  POSITION pos = App.m_pWorldDocTemplate->GetFirstDocPosition();
+	// add all documents to the list
+	POSITION pos = App.m_pWorldDocTemplate->GetFirstDocPosition();
 
 	for (int nItem = 0; pos != NULL; nItem++)
-	  {
-    CMUSHclientDoc* pDoc = (CMUSHclientDoc*) App.m_pWorldDocTemplate->GetNextDoc(pos);
+	{
+		CMUSHclientDoc* pDoc = (CMUSHclientDoc*)App.m_pWorldDocTemplate->GetNextDoc(pos);
 
-    CString strName = pDoc->m_mush_name;
+		CString strName = pDoc->m_mush_name;
 
-    if (pDoc->m_new_lines)
-      strName += CFormat (" (%i)", pDoc->m_new_lines);
-    
-    if ((pDoc->m_view_number - 1) < TRAY_MENU_COUNT)
-     sWorlds.insert (make_pair (strName, pDoc->m_view_number - 1));
+		if (pDoc->m_new_lines)
+			strName += CFormat(" (%i)", pDoc->m_new_lines);
 
-    }   // end of doing each world
+		if ((pDoc->m_view_number - 1) < TRAY_MENU_COUNT)
+			sWorlds.insert(std::make_pair(static_cast<std::string>(strName.GetString()), pDoc->m_view_number - 1));
+	}   // end of doing each world
 
-  CMenu menu;
+	CMenu menu;
 	VERIFY(menu.LoadMenu(IDR_MXP_MENU));
 
 	CMenu* pPopup = menu.GetSubMenu(0);
 	ASSERT(pPopup != NULL);
 	CWnd* pWndPopupOwner = this;
 
-  pPopup->DeleteMenu (0, MF_BYPOSITION);  // get rid of dummy item
+	pPopup->DeleteMenu(0, MF_BYPOSITION);  // get rid of dummy item
 
-  if (sWorlds.empty ())
-    pPopup->AppendMenu (MF_STRING | MF_GRAYED, TRAY_FIRST_MENU, "(no worlds open)");
-  else
-    for (multimap<string, int>::const_iterator i = sWorlds.begin ();
-         i != sWorlds.end ();
-         i++)
-      // add menu item
-      pPopup->AppendMenu (MF_STRING | MF_ENABLED, 
-                          TRAY_FIRST_MENU + i->second,    // world number
-                          i->first.c_str ());             // name and count of new lines         
-
+	if (sWorlds.empty())
+		pPopup->AppendMenu(MF_STRING | MF_GRAYED, TRAY_FIRST_MENU, "(no worlds open)");
+	else
+	for (auto i = sWorlds.begin(); i != sWorlds.end(); i++)
+		// add menu item
+		pPopup->AppendMenu(MF_STRING | MF_ENABLED,
+		TRAY_FIRST_MENU + i->second,    // world number
+		i->first.c_str());             // name and count of new lines         
 
 	while (pWndPopupOwner->GetStyle() & WS_CHILD)
 		pWndPopupOwner = pWndPopupOwner->GetParent();
 
-	pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON, 
-                        point.x, 
-                        point.y,
-			                  pWndPopupOwner);
+	pPopup->TrackPopupMenu(TPM_LEFTALIGN | TPM_RIGHTBUTTON,
+		point.x,
+		point.y,
+		pWndPopupOwner);
+}  // end of CMainFrame::LeftTrayClick
 
-  }  // end of CMainFrame::LeftTrayClick
 
 void CMainFrame::RightTrayClick (void)
   {
